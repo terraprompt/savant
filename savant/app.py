@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, f
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-import openai
 from clorm import Predicate, ConstantField, IntegerField
 from clorm.clingo import Control
 import time
@@ -17,9 +16,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
-
-# Set up your OpenAI API key
-openai.api_key = 'your-api-key-here'
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -40,7 +36,7 @@ class Problem(db.Model):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return User.query.get(user_id)
 
 @app.route('/')
 @login_required
@@ -102,6 +98,7 @@ def update_problem():
             'problem_id': problem.id
         })
     except Exception as e:
+        print("""Error """,str(e))
         return jsonify({
             'error': str(e),
             'log': f'Error occurred: {str(e)}'

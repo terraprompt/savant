@@ -3,11 +3,11 @@ from clorm import Predicate, ConstantField, IntegerField
 from clorm.clingo import Control
 
 # Set up your OpenAI API key
-openai.api_key = 'your-api-key-here'
+openai.api_key = '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'
 
 def query_gpt4(prompt):
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
+    response = openai.chat.completions.create(
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": "You are an AI assistant that helps parse optimization problems and generate Python code."},
             {"role": "user", "content": prompt}
@@ -20,15 +20,17 @@ def parse_problem(description):
     Parse the following optimization problem description and extract the relevant information:
     {description}
 
-    Return a Python dictionary with the following structure:
+    Return a Python dictionary with the following structure, do not add anything else to the reply generated including markup:
     {{
-        "predicates": [list of predicates with their fields],
+        "predicates": [list of predicates with their fields(name and type)],
         "facts": [list of facts],
         "constraints": [list of constraints],
         "optimize": "maximize or minimize statement"
     }}
     """
-    return eval(query_gpt4(prompt))
+    llm_result = query_gpt4(prompt)
+    result = eval(llm_result)
+    return result
 
 def generate_clorm_predicates(predicates):
     predicate_code = ""

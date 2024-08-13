@@ -28,10 +28,11 @@
                     <option value="{{ problem.id }}">Problem {{ problem.id }}</option>
                     {% endfor %}
                 </select>
-                <textarea id="problem-description" class="w-full h-40 p-2 border rounded" 
+                <textarea name="problem_description" id="problem-description" class="w-full h-40 p-2 border rounded" 
                     hx-post="/update_problem"
                     hx-trigger="keyup changed delay:500ms"
                     hx-target="#generated-code"
+                    hx-include="this"
                     hx-swap="innerHTML"></textarea>
             </div>
             <div id="generated-code" class="bg-white p-4 rounded shadow">
