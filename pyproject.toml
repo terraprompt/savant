@@ -5,7 +5,7 @@ description = "An intelligent optimization problem solver using LLMs and Answer 
 authors = ["Dipankar Sarkar <me@dipankar.name>"]
 readme = "README.md"
 license = "MIT"
-repository = "https://github.com/your-username/savant"
+repository = "https://github.com/terraprompt/savant"
 keywords = ["optimization", "llm", "asp", "clingo", "clorm", "ai"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -23,11 +23,13 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-flask = "^3.0.0"
+fastapi = "^0.100.0"
+uvicorn = "^0.20.0"
 openai = "^1.0.0"
 clorm = "^1.6.0"
 click = "^8.0.0"
 dspy-ai = "^3.0.0"
+fastmcp = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.0.0"

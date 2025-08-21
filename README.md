@@ -1,58 +1,73 @@
 # Savant: Intelligent Optimization Problem Solver
 
+[![PyPI version](https://badge.fury.io/py/savant.svg)](https://badge.fury.io/py/savant)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Savant is an intelligent Python library that leverages the power of Large Language Models (LLMs) and DSPy to parse, solve, and visualize optimization problems. It provides both a command-line interface and a web interface for users to input problem descriptions in natural language and automatically generates solutions using Answer Set Programming (ASP).
 
-## Features
+## 🌟 Features
 
-- **Natural Language Processing**: Utilizes GPT-4 and DSPy for robust optimization problem parsing.
-- **Code Generation**: Automatically generates Clorm predicates and ASP programs.
-- **Problem Validation**: Validates if a problem can be solved with ASP before attempting to solve it.
-- **Interactive Gap Filling**: Asks for additional information when problem descriptions are incomplete.
-- **Problem Solving**: Implements optimization problem solving using Clingo.
-- **Dual Interface**: Command-line interface for direct usage and web interface for interactive solving.
-- **Modern Python Package**: Installable via pip with proper CLI integration.
+- **Natural Language Processing**: Utilizes GPT-4 and DSPy for robust optimization problem parsing
+- **Code Generation**: Automatically generates Clorm predicates and ASP programs
+- **Problem Validation**: Validates if a problem can be solved with ASP before attempting to solve it
+- **Interactive Gap Filling**: Asks for additional information when problem descriptions are incomplete
+- **Problem Solving**: Implements optimization problem solving using Clingo
+- **Dual Interface**: Command-line interface for direct usage and web interface for interactive solving
+- **Modern Python Package**: Installable via pip with proper CLI integration
 
-## Prerequisites
+## 🚀 Quick Start
 
-Before you begin, ensure you have met the following requirements:
+```bash
+# Install Savant
+pip install savant
+
+# Set your OpenAI API key
+export OPENAI_API_KEY=your_openai_api_key_here
+
+# Solve a problem directly from the command line
+savant -p "Minimize x+y subject to x>=0, y>=0, x+y<=10"
+
+# Or run the web interface
+savant --web --port 5000
+```
+
+## 📋 Prerequisites
 
 - Python 3.8+
 - An OpenAI API key
 
-## Installation
+## 📦 Installation
 
-Install Savant directly from PyPI:
+### From PyPI (Recommended)
 
 ```bash
 pip install savant
 ```
 
-Or install from source:
+### From Source
 
 ```bash
-git clone https://github.com/your-username/savant.git
+git clone https://github.com/terraprompt/savant.git
 cd savant
 pip install .
 ```
 
-## Setup
+## ⚙️ Configuration
 
-Set up your environment variables:
-- Set your OpenAI API key as an environment variable:
-  ```bash
-  export OPENAI_API_KEY=your_openai_api_key_here
-  ```
-- (Optional) Set a custom Flask secret key:
-  ```bash
-  export FLASK_SECRET_KEY=your_flask_secret_key_here
-  ```
+Savant can be configured using environment variables:
 
-For temporary usage without setting environment variables:
 ```bash
-OPENAI_API_KEY=your_openai_api_key_here savant -p "Minimize x+y subject to x>=0, y>=0"
+# Required: Set your OpenAI API key
+export OPENAI_API_KEY=your_openai_api_key_here
+
+# Optional: Configure the LLM model (default: gpt-4o)
+export SAVANT_LLM_MODEL=gpt-4-turbo
+
+# Optional: Set a custom Flask secret key
+export FLASK_SECRET_KEY=your_flask_secret_key_here
 ```
 
-## Usage
+## 🖥️ Usage
 
 ### Command Line Interface
 
@@ -62,8 +77,8 @@ Solve optimization problems directly from the command line:
 # Solve a problem directly
 savant -p "We have a task scheduling problem. Each task has a name, duration, and priority. We need to schedule tasks within a maximum time of 10 units. Tasks cannot overlap. We want to maximize the total priority of scheduled tasks. Available tasks are: Task1: duration 3, priority 5; Task2: duration 2, priority 3; Task3: duration 4, priority 7; Task4: duration 1, priority 2."
 
-# Run the web interface
-savant --web
+# Run the web interface on a custom port
+savant --web --port 8080
 ```
 
 ### Interactive Problem Solving
@@ -81,10 +96,14 @@ savant -p "Solve a scheduling problem"
 Run the web interface to solve problems interactively:
 
 ```bash
-savant --web --port 5000
+# Run on default port 5000
+savant --web
+
+# Run on a custom port
+savant --web --port 8080
 ```
 
-Then open your browser to `http://localhost:5000` to access the web interface. The web interface also supports interactive gap filling - if your problem description is incomplete, Savant will ask for additional information directly in the web interface.
+Then open your browser to `http://localhost:5000` (or your custom port) to access the web interface. The web interface also supports interactive gap filling - if your problem description is incomplete, Savant will ask for additional information directly in the web interface.
 
 ### Python API
 
@@ -118,7 +137,7 @@ else:
     print(f"Solution: {result.solution}")
 ```
 
-## Use Cases
+## 💡 Example Use Cases
 
 ### 1. Task Scheduling Problem
 
@@ -150,48 +169,48 @@ savant -p "Color a graph with 4 nodes and edges: (1,2), (2,3), (3,4), (1,4). Use
 savant -p "Solve a 4x4 Sudoku puzzle. Given: position (1,1) = 1, position (1,3) = 2, position (2,2) = 3, position (3,1) = 4. Find values for all positions respecting Sudoku rules."
 ```
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 savant/
 ├── savant/
 │   ├── __init__.py
-│   ├── cli.py
-│   ├── solver.py
-│   ├── dspy_modules.py
+│   ├── cli.py          # Command-line interface
+│   ├── solver.py       # Core solver logic
+│   ├── dspy_modules.py # DSPy modules for LLM processing
 │   └── templates/
-│       └── index.html
+│       └── index.html  # Web interface template
 ├── tests/
 ├── pyproject.toml
 ├── README.md
 └── LICENSE
 ```
 
-## Contributing
+## 🤝 Contributing
 
 Contributions to Savant are welcome! Please follow these steps:
 
-1. Fork the repository.
-2. Create a new branch: `git checkout -b feature-branch-name`.
-3. Make your changes and commit them: `git commit -m 'Add some feature'`.
-4. Push to the original branch: `git push origin feature-branch-name`.
-5. Create the pull request.
+1. Fork the repository
+2. Create a new branch: `git checkout -b feature-branch-name`
+3. Make your changes and commit them: `git commit -m 'Add some feature'`
+4. Push to the original branch: `git push origin feature-branch-name`
+5. Create the pull request
 
 Alternatively, see the GitHub documentation on [creating a pull request](https://help.github.com/articles/creating-a-pull-request/).
 
-## License
+## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Contact
+## 📧 Contact
 
 If you have any questions or feedback, please contact the maintainer:
 
 Dipankar Sarkar - me@dipankar.name
 
-Project Link: [https://github.com/your-username/savant](https://github.com/your-username/savant)
+Project Link: [https://github.com/terraprompt/savant](https://github.com/terraprompt/savant)
 
-## Acknowledgements
+## 🙏 Acknowledgements
 
 - [OpenAI](https://openai.com/) for providing the GPT-4 API
 - [DSPy](https://github.com/stanfordnlp/dspy) for LLM prompting and optimization

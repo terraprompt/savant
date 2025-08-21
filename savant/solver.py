@@ -11,8 +11,9 @@ from savant.dspy_modules import InteractiveProblemSolver
 
 # Configure DSPy with OpenAI
 openai_api_key = os.getenv("OPENAI_API_KEY")
+llm_model = os.getenv("SAVANT_LLM_MODEL", "openai/gpt-4o")
 # Use a placeholder if no API key is provided (will fail at runtime if actually needed)
-lm = dspy.LM("openai/gpt-4o", api_key=openai_api_key or "YOUR_API_KEY_HERE")
+lm = dspy.LM(llm_model, api_key=openai_api_key or "YOUR_API_KEY_HERE")
 dspy.settings.configure(lm=lm)
 
 

@@ -4,67 +4,128 @@ import os
 import sys
 from typing import Optional
 import click
-from flask import Flask, render_template, request, jsonify
+from fastapi import FastAPI, Form, HTTPException
+from fastapi.responses import HTMLResponse
+from pydantic import BaseModel
+import uvicorn
 from savant.solver import solve_optimization_problem, ProblemSolverResult
 
+try:
+    from fastmcp import FastMCP
+    FASTMCP_AVAILABLE = True
+except ImportError:
+    FASTMCP_AVAILABLE = False
+
+
+class SolveRequest(BaseModel):
+    problem_description: str
+    additional_info: str = ""
+
+
 def create_app():
-    """Create and configure the Flask application."""
-    app = Flask(__name__)
-    app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY') or 'your-secret-key-here'
-    
-    @app.route('/')
-    def index():
+    """Create and configure the FastAPI application."""
+    app = FastAPI(title="Savant API", version="0.2.0")
+
+    @app.get("/", response_class=HTMLResponse)
+    async def index():
         """Render the main dashboard page."""
-        return render_template('index.html')
-    
-    @app.route('/solve', methods=['POST'])
-    def solve():
+        return """
+        <html>
+            <head>
+                <title>Savant - Optimization Problem Solver</title>
+            </head>
+            <body>
+                <h1>Savant - Optimization Problem Solver</h1>
+                <form action="/solve" method="post">
+                    <label for="problem_description">Problem Description:</label><br>
+                    <textarea id="problem_description" name="problem_description" rows="4" cols="50"></textarea><br>
+                    <label for="additional_info">Additional Information (optional):</label><br>
+                    <textarea id="additional_info" name="additional_info" rows="2" cols="50"></textarea><br>
+                    <input type="submit" value="Solve">
+                </form>
+            </body>
+        </html>
+        """
+
+    @app.post("/solve")
+    async def solve(request: SolveRequest):
         """Solve an optimization problem."""
-        problem_description = request.form['problem_description']
-        additional_info = request.form.get('additional_info', '')
-        
         try:
-            result = solve_optimization_problem(problem_description, additional_info)
-            
+            result = solve_optimization_problem(
+                request.problem_description, request.additional_info
+            )
+
             if result.needs_more_info:
-                return jsonify({
-                    'needs_more_info': True,
-                    'questions': result.questions,
-                    'log': 'Please provide more information to solve this problem.'
-                })
+                return {
+                    "needs_more_info": True,
+                    "questions": result.questions,
+                    "log": "Please provide more information to solve this problem."
+                }
             elif result.error:
-                return jsonify({
-                    'error': result.error,
-                    'log': f'Error occurred while solving: {result.error}'
-                }), 400
-            else:
-                return jsonify({
-                    'solution': result.solution,
-                    'log': 'Problem solved successfully.'
+                raise HTTPException(status_code=400, detail={
+                    "error": result.error,
+                    "log": f"Error occurred while solving: {result.error}"
                 })
+            else:
+                return {
+                    "solution": result.solution,
+                    "log": "Problem solved successfully."
+                }
         except Exception as e:
-            return jsonify({
-                'error': str(e),
-                'log': f'Error occurred while solving: {str(e)}'
-            }), 400
-    
+            raise HTTPException(status_code=400, detail={
+                "error": str(e),
+                "log": f"Error occurred while solving: {str(e)}"
+            })
+
     return app
+
 
 @click.command()
 @click.option('--problem', '-p', help='Optimization problem description')
 @click.option('--web', '-w', is_flag=True, help='Run web interface')
-@click.option('--port', default=5000, help='Port for web interface')
-def main(problem: Optional[str], web: bool, port: int):
+@click.option('--mcp', '-m', is_flag=True, help='Run as Model Context Protocol server')
+@click.option('--port', default=int(os.getenv('SAVANT_PORT', 8000)), help='Port for web interface')
+def main(problem: Optional[str], web: bool, mcp: bool, port: int):
     """Savant CLI - An intelligent optimization problem solver.
     
     Examples:
       savant -p "Minimize x+y subject to x>=0, y>=0, x+y<=10"
       savant --web
+      savant --mcp
     """
-    if web:
+    if mcp:
+        # Run as MCP server
+        if not FASTMCP_AVAILABLE:
+            print("Error: fastmcp package not installed. Please run 'pip install fastmcp'")
+            sys.exit(1)
+            
+        # Create FastMCP app
+        mcp_app = FastMCP("Savant Optimizer")
+        
+        @mcp_app.prompt(name="solve_optimization")
+        async def solve_optimization(problem: str) -> str:
+            """Solve an optimization problem using Savant.
+            
+            Args:
+                problem: The optimization problem description
+                
+            Returns:
+                The solution to the optimization problem
+            """
+            try:
+                result = solve_optimization_problem(problem, "")
+                if result.error:
+                    return f"Error: {result.error}"
+                return f"Solution: {result.solution}"
+            except Exception as e:
+                return f"Error occurred: {str(e)}"
+        
+        print("Starting Savant MCP server on stdin/stdout...")
+        mcp_app.run()
+    elif web:
         # Run web interface
         app = create_app()
-        app.run(host='0.0.0.0', port=port, debug=True)
+        uvicorn.run(app, host="0.0.0.0", port=port)
     elif problem:
         # Solve problem from command line
         current_problem = problem
@@ -94,6 +155,7 @@ def main(problem: Optional[str], web: bool, port: int):
         # Show help if no options provided
         click.echo("Savant: An intelligent optimization problem solver")
         click.echo("Use --help for more information")
+
 
 if __name__ == '__main__':
     main()
