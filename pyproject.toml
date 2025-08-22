@@ -5,7 +5,7 @@ description = "An intelligent optimization problem solver using LLMs and Answer 
 authors = ["Dipankar Sarkar <me@dipankar.name>"]
 readme = "README.md"
 license = "MIT"
-repository = "https://github.com/terraprompt/savant"
+repository = "https://github.com/skelf-research/savant"
 keywords = ["optimization", "llm", "asp", "clingo", "clorm", "ai"]
 classifiers = [
     "Development Status :: 3 - Alpha",
