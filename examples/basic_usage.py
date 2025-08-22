@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Basic usage examples for Savant optimization problem solver.
+Basic usage examples for Savanty optimization problem solver.
 """
 
-from savant.solver import solve_optimization_problem
+from savanty.solver import solve_optimization_problem
 
 def example_task_scheduling():
     """Example of a task scheduling problem."""

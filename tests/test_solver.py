@@ -1,11 +1,11 @@
-"""Tests for the Savant optimization solver."""
+"""Tests for the Savanty optimization solver."""
 
 import pytest
 from unittest.mock import patch, MagicMock
-from savant.solver import validate_and_parse_problem, generate_clorm_predicates, generate_asp_program, ProblemSolverResult, solve_optimization_problem
+from savanty.solver import validate_and_parse_problem, generate_clorm_predicates, generate_asp_program, ProblemSolverResult, solve_optimization_problem
 
 
-@patch('savant.solver.dspy')
+@patch('savanty.solver.dspy')
 def test_validate_and_parse_problem(mock_dspy):
     """Test validating and parsing an optimization problem."""
     # Mock the DSPy modules
@@ -17,7 +17,7 @@ def test_validate_and_parse_problem(mock_dspy):
     mock_result.program.program_components = '{"predicates": [{"name": "Variable", "fields": {"name": "ConstantField", "value": "IntegerField"}}], "facts": ["variable(x)", "variable(y)"], "constraints": ["x >= 0", "y >= 0", "x + y <= 10"], "optimize": "minimize x + y"}'
     mock_result.needs_more_info = False
     
-    with patch('savant.solver.InteractiveProblemSolver') as mock_problem_solver:
+    with patch('savanty.solver.InteractiveProblemSolver') as mock_problem_solver:
         mock_instance = MagicMock()
         mock_instance.forward.return_value = mock_result
         mock_problem_solver.return_value = mock_instance
@@ -32,7 +32,7 @@ def test_validate_and_parse_problem(mock_dspy):
         assert "optimize" in result
 
 
-@patch('savant.solver.dspy')
+@patch('savanty.solver.dspy')
 def test_validate_and_parse_problem_needs_info(mock_dspy):
     """Test validating and parsing an optimization problem that needs more info."""
     # Mock the DSPy modules
@@ -44,7 +44,7 @@ def test_validate_and_parse_problem_needs_info(mock_dspy):
     mock_result.needs_more_info = True
     mock_result.questions = ['What is the objective function?', 'What are the constraints?']
     
-    with patch('savant.solver.InteractiveProblemSolver') as mock_problem_solver:
+    with patch('savanty.solver.InteractiveProblemSolver') as mock_problem_solver:
         mock_instance = MagicMock()
         mock_instance.forward.return_value = mock_result
         mock_problem_solver.return_value = mock_instance
@@ -93,7 +93,7 @@ def test_generate_asp_program():
     assert "#show." in asp_program
 
 
-@patch('savant.solver.validate_and_parse_problem')
+@patch('savanty.solver.validate_and_parse_problem')
 def test_solve_optimization_problem_success(mock_validate):
     """Test solving an optimization problem successfully."""
     # Mock the validation to return a valid problem structure
@@ -105,7 +105,7 @@ def test_solve_optimization_problem_success(mock_validate):
     }
     
     # We'll mock the exec and globals functions to avoid ASP execution
-    with patch('savant.solver.exec'), patch('savant.solver.globals', return_value={}):
+    with patch('savanty.solver.exec'), patch('savanty.solver.globals', return_value={}):
         result = solve_optimization_problem("Minimize x subject to x>=0")
         assert isinstance(result, ProblemSolverResult)
         assert not result.needs_more_info
@@ -113,7 +113,7 @@ def test_solve_optimization_problem_success(mock_validate):
         assert result.error is not None
 
 
-@patch('savant.solver.validate_and_parse_problem')
+@patch('savanty.solver.validate_and_parse_problem')
 def test_solve_optimization_problem_needs_info(mock_validate):
     """Test solving an optimization problem that needs more info."""
     # Mock the validation to raise the needs more info error

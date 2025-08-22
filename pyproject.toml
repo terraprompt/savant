@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "savant"
+name = "savanty"
 version = "0.2.0"
 description = "An intelligent optimization problem solver using LLMs and Answer Set Programming"
 authors = ["Dipankar Sarkar <me@dipankar.name>"]
 readme = "README.md"
 license = "MIT"
-repository = "https://github.com/skelf-research/savant"
+repository = "https://github.com/skelf-research/savanty"
 keywords = ["optimization", "llm", "asp", "clingo", "clorm", "ai"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -23,8 +23,8 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-fastapi = "^0.100.0"
-uvicorn = "^0.20.0"
+fastapi = "^0.115.12"
+uvicorn = "^0.31.1"
 openai = "^1.0.0"
 clorm = "^1.6.0"
 click = "^8.0.0"
@@ -36,7 +36,7 @@ pytest = "^7.0.0"
 pytest-cov = "^4.0.0"
 
 [tool.poetry.scripts]
-savant = "savant.cli:main"
+savanty = "savant.cli:main"
 
 [build-system]
 requires = ["poetry-core"]

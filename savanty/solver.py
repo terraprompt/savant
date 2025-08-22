@@ -1,4 +1,4 @@
-"""Core solver module for Savant using DSPy."""
+"""Core solver module for Savanty using DSPy."""
 
 import os
 import json
@@ -6,12 +6,12 @@ from typing import Dict, Any, Optional, List
 from clorm import Predicate, ConstantField, IntegerField
 from clorm.clingo import Control
 import dspy
-from savant.dspy_modules import InteractiveProblemSolver
+from savanty.dspy_modules import InteractiveProblemSolver
 
 
 # Configure DSPy with OpenAI
 openai_api_key = os.getenv("OPENAI_API_KEY")
-llm_model = os.getenv("SAVANT_LLM_MODEL", "openai/gpt-4o")
+llm_model = os.getenv("SAVANTY_LLM_MODEL", "openai/gpt-4o")
 # Use a placeholder if no API key is provided (will fail at runtime if actually needed)
 lm = dspy.LM(llm_model, api_key=openai_api_key or "YOUR_API_KEY_HERE")
 dspy.settings.configure(lm=lm)

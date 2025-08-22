@@ -1,4 +1,4 @@
-"""Savant: An intelligent optimization problem solver using LLMs and ASP."""
+"""Savanty: An intelligent optimization problem solver using LLMs and ASP."""
 
 __version__ = "0.2.0"
 __author__ = "Dipankar Sarkar"

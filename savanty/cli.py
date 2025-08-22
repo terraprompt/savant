@@ -1,4 +1,4 @@
-"""Main application module for Savant."""
+"""Main application module for Savanty."""
 
 import os
 import sys
@@ -8,7 +8,7 @@ from fastapi import FastAPI, Form, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 import uvicorn
-from savant.solver import solve_optimization_problem, ProblemSolverResult
+from savanty.solver import solve_optimization_problem, ProblemSolverResult
 
 try:
     from fastmcp import FastMCP
@@ -24,7 +24,7 @@ class SolveRequest(BaseModel):
 
 def create_app():
     """Create and configure the FastAPI application."""
-    app = FastAPI(title="Savant API", version="0.2.0")
+    app = FastAPI(title="Savanty API", version="0.2.0")
 
     @app.get("/", response_class=HTMLResponse)
     async def index():
@@ -32,10 +32,10 @@ def create_app():
         return """
         <html>
             <head>
-                <title>Savant - Optimization Problem Solver</title>
+                <title>Savanty - Optimization Problem Solver</title>
             </head>
             <body>
-                <h1>Savant - Optimization Problem Solver</h1>
+                <h1>Savanty - Optimization Problem Solver</h1>
                 <form action="/solve" method="post">
                     <label for="problem_description">Problem Description:</label><br>
                     <textarea id="problem_description" name="problem_description" rows="4" cols="50"></textarea><br>
@@ -84,14 +84,14 @@ def create_app():
 @click.option('--problem', '-p', help='Optimization problem description')
 @click.option('--web', '-w', is_flag=True, help='Run web interface')
 @click.option('--mcp', '-m', is_flag=True, help='Run as Model Context Protocol server')
-@click.option('--port', default=int(os.getenv('SAVANT_PORT', 8000)), help='Port for web interface')
+@click.option('--port', default=int(os.getenv('SAVANTY_PORT', 8000)), help='Port for web interface')
 def main(problem: Optional[str], web: bool, mcp: bool, port: int):
-    """Savant CLI - An intelligent optimization problem solver.
+    """Savanty CLI - An intelligent optimization problem solver.
     
     Examples:
-      savant -p "Minimize x+y subject to x>=0, y>=0, x+y<=10"
-      savant --web
-      savant --mcp
+      savanty -p "Minimize x+y subject to x>=0, y>=0, x+y<=10"
+      savanty --web
+      savanty --mcp
     """
     if mcp:
         # Run as MCP server
@@ -100,7 +100,7 @@ def main(problem: Optional[str], web: bool, mcp: bool, port: int):
             sys.exit(1)
             
         # Create FastMCP app
-        mcp_app = FastMCP("Savant Optimizer")
+            mcp_app = FastMCP("Savanty Optimizer")
         
         @mcp_app.prompt(name="solve_optimization")
         async def solve_optimization(problem: str) -> str:
@@ -120,7 +120,7 @@ def main(problem: Optional[str], web: bool, mcp: bool, port: int):
             except Exception as e:
                 return f"Error occurred: {str(e)}"
         
-        print("Starting Savant MCP server on stdin/stdout...")
+        print("Starting Savanty MCP server on stdin/stdout...")
         mcp_app.run()
     elif web:
         # Run web interface
@@ -153,7 +153,7 @@ def main(problem: Optional[str], web: bool, mcp: bool, port: int):
                 break
     else:
         # Show help if no options provided
-        click.echo("Savant: An intelligent optimization problem solver")
+        click.echo("Savanty: An intelligent optimization problem solver")
         click.echo("Use --help for more information")
 
 

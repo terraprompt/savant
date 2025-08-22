@@ -1,4 +1,4 @@
-"""DSPy modules for Savant optimization problem solver."""
+"""DSPy modules for Savanty optimization problem solver."""
 
 import dspy
 from typing import List, Dict, Any
